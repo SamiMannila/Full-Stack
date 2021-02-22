@@ -8,7 +8,7 @@ const Filter = ({newFilter, handleFilterChange}) => {
   )
 }
 const FilterItems = (arr, query) => {
-    return arr.filter(person => person.name.toLowerCase().indexOf(query.toLowerCase()) !== -1)
-  }
+  return arr.filter(person => person.name.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+}
 
 export {FilterItems, Filter};
