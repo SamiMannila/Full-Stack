@@ -3,6 +3,7 @@ import Person from './components/Person'
 import {FilterItems, Filter} from './components/FilterItems'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notifications';
 
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const hook = () => {
     personService
@@ -42,6 +45,14 @@ const App = () => {
       .then(res => {
         setPersons(persons.filter(person => id !== person.id))
       })
+      .catch(() => {
+        setErrorMessage(
+          `Information of ${person.name} has already been removed from the server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
     }
 }
 
@@ -60,6 +71,12 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(
+            `Added ${returnedPerson.name}`
+          )
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
       })
     }else{
       if (window.confirm(`${personWithSameName.name} is already added to the phonebook, replace the old number with a new one?`)){
@@ -70,6 +87,12 @@ const App = () => {
           setPersons(persons.map(person => person.id !== personWithSameName.id ? person : updatedPersons))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(
+            `Changed ${personWithSameName.name}'s number`
+          )
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
       }
 
@@ -79,6 +102,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification.Error message={errorMessage} />
+      <Notification.Success message={successMessage} />
       <Filter newFilter = {newFilter} handleFilterChange = {handleFilterChange} />
       <h2>Add a new</h2>
       <PersonForm addNumber = {addNumber} newName = {newName} handleNameChange = {handleNameChange} 
